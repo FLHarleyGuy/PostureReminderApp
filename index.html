@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d0d0d" />
+  <title>Posture Check</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:        #0d0d0d;
+      --surface:   #161616;
+      --border:    #2a2a2a;
+      --accent:    #c8f060;
+      --accent-dim:#8aaa30;
+      --muted:     #555;
+      --text:      #e8e8e8;
+      --text-dim:  #888;
+      --danger:    #ff5f5f;
+      --radius:    12px;
+      --mono:      'Space Mono', monospace;
+      --sans:      'DM Sans', sans-serif;
+    }
+
+    :root[data-theme="light"] {
+      --bg:        #f5f3ec;
+      --surface:   #fffdf6;
+      --border:    #d9d2bf;
+      --accent:    #526f13;
+      --accent-dim:#6f8d28;
+      --muted:     #827a68;
+      --text:      #181712;
+      --text-dim:  #595441;
+      --danger:    #b83f3f;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100dvh;
+      padding: 24px 20px 40px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+
+    header a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header h1 {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .app-nav {
+      display: flex;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .app-nav a {
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .app-nav a:hover,
+    .app-nav a:focus-visible {
+      color: var(--accent);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-right span {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--mono);
+      letter-spacing: 0.08em;
+    }
+
+    .btn-icon {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .btn-icon:hover { border-color: var(--text-dim); color: var(--text); }
+    .btn-icon.active { border-color: var(--accent); color: var(--accent); }
+
+    /* ── MAIN CARD ── */
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* ── COUNTDOWN RING ── */
+    .countdown-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .countdown-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    .progress-ring-wrap {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-ring {
+      position: absolute;
+      top: 0; left: 0;
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 3;
+    }
+
+    .progress-ring-fill {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 3;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear, stroke 0.3s;
+    }
+
+    .progress-ring-fill.warning { stroke: var(--danger); }
+
+    .ring-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ring-countdown {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      transition: color 0.3s;
+      text-align: center;
+    }
+
+    .ring-countdown.warning { color: var(--danger); }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s;
+    }
+
+    .status-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── SLIDER ── */
+    .slider-block {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .slider-label {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      font-family: var(--mono);
+    }
+
+    .slider-value {
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .slider-value span {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--text-dim);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(200, 240, 96, 0.15);
+      transition: box-shadow 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:active {
+      box-shadow: 0 0 0 6px rgba(200, 240, 96, 0.25);
+    }
+
+    .slider-ticks {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 2px;
+    }
+
+    .slider-ticks span {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── CONTROLS ── */
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover { border-color: var(--text-dim); color: var(--text); }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn.primary:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      filter: brightness(1.08);
+    }
+
+    .btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    /* ── ACK BUTTON ── */
+    .ack-wrap { display: none; }
+    .ack-wrap.visible { display: block; }
+
+    .btn-ack {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      background: rgba(200, 240, 96, 0.06);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      animation: glow-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(200,240,96,0.15); }
+      50%       { box-shadow: 0 0 16px 4px rgba(200,240,96,0.2); }
+    }
+
+    .btn-ack:hover { background: rgba(200, 240, 96, 0.12); }
+
+    /* ── TIP DISPLAY ── */
+    .tip-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 80px;
+    }
+
+    .tip-label {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    .tip-category {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 20px;
+      border: 1px solid;
+      margin-bottom: 4px;
+    }
+
+    .tip-category.seated   { color: #60b4f0; border-color: #60b4f030; background: #60b4f008; }
+    .tip-category.stretch  { color: #f0a060; border-color: #f0a06030; background: #f0a06008; }
+    .tip-category.movement { color: var(--accent); border-color: #c8f06030; background: #c8f06008; }
+    .tip-category.eyes     { color: #c060f0; border-color: #c060f030; background: #c060f008; }
+    .tip-category.mindful  { color: #f06090; border-color: #f0609030; background: #f0609008; }
+
+    .tip-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text);
+      font-weight: 300;
+    }
+
+    .tip-empty {
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── PERMISSION BANNER ── */
+    .permission-banner {
+      width: 100%;
+      max-width: 420px;
+      margin-top: 16px;
+      padding: 14px 18px;
+      background: rgba(255, 95, 95, 0.08);
+      border: 1px solid rgba(255, 95, 95, 0.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .permission-banner p {
+      font-size: 12px;
+      color: var(--danger);
+      font-family: var(--mono);
+      line-height: 1.5;
+    }
+
+    .btn-permission {
+      white-space: nowrap;
+      padding: 8px 14px;
+      border: 1px solid var(--danger);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--danger);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-permission:hover { background: rgba(255, 95, 95, 0.1); }
+
+    .hidden { display: none !important; }
+
+    /* ── COACH CARD ── */
+    .coach-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 16px;
+    }
+
+    .coach-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .coach-header:hover .coach-title { color: var(--text); }
+
+    .coach-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      transition: color 0.2s;
+    }
+
+    .coach-day-badge {
+      background: rgba(200, 240, 96, 0.1);
+      color: var(--accent);
+      border: 1px solid rgba(200, 240, 96, 0.2);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+    }
+
+    .coach-body {
+      padding: 0 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .coach-body.collapsed { display: none; }
+
+    .coach-progress-wrap { display: flex; flex-direction: column; gap: 6px; }
+
+    .coach-progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .coach-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.6s ease;
+    }
+
+    .coach-progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .coach-stage {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .coach-message {
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--text-dim);
+      margin: 0;
+    }
+
+    .coach-recommend {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      padding: 10px 14px;
+      background: rgba(200, 240, 96, 0.04);
+      border: 1px solid rgba(200, 240, 96, 0.12);
+      border-radius: 6px;
+      line-height: 1.6;
+    }
+
+    .coach-recommend strong { color: var(--accent); font-weight: 700; }
+
+    .coach-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .streak-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .streak-value {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* ── POSTURE CHECK-IN ── */
+    .checkin-block {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+
+    .checkin-block.visible {
+      display: block;
+    }
+
+    .checkin-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    .checkin-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-checkin {
+      flex: 1;
+      padding: 10px 6px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-checkin:hover {
+      border-color: var(--text-dim);
+    }
+
+    .btn-checkin.selected {
+      border-color: var(--accent);
+      background: rgba(200, 240, 96, 0.12);
+    }
+
+    .btn-checkin.poor.selected {
+      border-color: var(--danger);
+      background: rgba(255, 95, 95, 0.12);
+    }
+
+    .checkin-saved {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .checkin-saved.visible {
+      display: block;
+    }
+
+    /* ── POSTURE TREND ── */
+    .coach-trend {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .trend-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .trend-value {
+      font-family: var(--mono);
+      font-size: 18px;
+      color: var(--accent);
+    }
+
+    .trend-sub {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-weight: 300;
+      line-height: 1.5;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: auto;
+      padding-top: 28px;
+      font-size: 10px;
+      color: var(--muted);
+      font-family: var(--mono);
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+
+    footer a {
+      color: var(--text-dim);
+      text-decoration: none;
+    }
+
+    footer a:hover,
+    footer a:focus-visible {
+      color: var(--accent);
+    }
+
+    @media (max-width: 420px) {
+      header {
+        flex-wrap: wrap;
+      }
+
+      .app-nav {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="./" aria-label="Posture Check home"><h1>Posture Check</h1></a>
+    <nav class="app-nav" aria-label="App pages">
+      <a href="about.html">About</a>
+      <a href="how-to-use.html">How to use</a>
+    </nav>
+    <div class="header-right">
+      <button class="btn-icon" id="btnTheme" title="Switch to light mode" aria-label="Switch to light mode">☾</button>
+      <button class="btn-icon active" id="btnSound" title="Toggle chime" aria-label="Toggle chime">♪</button>
+      <span id="tipCount">... tips</span>
+    </div>
+  </header>
+
+  <div class="card">
+
+    <!-- Countdown Ring -->
+    <div class="countdown-block">
+      <div class="countdown-label">Next reminder in</div>
+      <div class="progress-ring-wrap">
+        <svg class="progress-ring" width="140" height="140" viewBox="0 0 140 140">
+          <circle class="progress-ring-bg" cx="70" cy="70" r="62" />
+          <circle class="progress-ring-fill" id="ringFill" cx="70" cy="70" r="62"
+            stroke-dasharray="389.557"
+            stroke-dashoffset="0" />
+        </svg>
+        <div class="ring-inner">
+          <div class="ring-countdown" id="countdownDisplay">--:--</div>
+          <div class="status-dot" id="statusDot"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slider -->
+    <div class="slider-block">
+      <div class="slider-header">
+        <div class="slider-label">Remind me every</div>
+        <div class="slider-value" id="sliderValue">25 <span>min</span></div>
+      </div>
+      <input type="range" id="intervalSlider" min="1" max="12" value="5" step="1" />
+      <div class="slider-ticks">
+        <span>5</span>
+        <span>15</span>
+        <span>25</span>
+        <span>40</span>
+        <span>60</span>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="btn primary" id="btnStart">Start</button>
+      <button class="btn" id="btnPause" disabled>Pause</button>
+      <button class="btn" id="btnReset">Reset</button>
+    </div>
+
+    <!-- Acknowledge -->
+    <div class="ack-wrap" id="ackWrap">
+      <button class="btn-ack" id="btnAck">Got it / Reset timer</button>
+    </div>
+
+    <!-- Tip display -->
+    <div class="tip-block">
+      <div class="tip-label">Current tip</div>
+      <div id="tipCategory"></div>
+      <div class="tip-text" id="tipText">
+        <span class="tip-empty">Start the timer and your first tip will show up here.</span>
+      </div>
+    </div>
+
+    <!-- Posture Check-in -->
+    <div class="checkin-block" id="checkinBlock">
+      <div class="checkin-label">How's your posture right now?</div>
+      <div class="checkin-buttons">
+        <button class="btn-checkin poor" id="btnCheckinPoor">😬 Poor</button>
+        <button class="btn-checkin fair" id="btnCheckinFair">😐 Fair</button>
+        <button class="btn-checkin good" id="btnCheckinGood">😊 Good</button>
+      </div>
+      <div class="checkin-saved" id="checkinSaved">✓ logged</div>
+    </div>
+
+  </div>
+
+  <!-- Habit Coach -->
+  <div class="coach-card" id="coachCard">
+    <div class="coach-header" id="coachToggle">
+      <div class="coach-title">
+        ◈ Habit Coach
+        <span class="coach-day-badge" id="coachDayBadge">Day 1</span>
+      </div>
+      <button class="btn-icon" id="btnCoachToggle" aria-label="Toggle coach">▾</button>
+    </div>
+    <div class="coach-body" id="coachBody">
+      <div class="coach-progress-wrap">
+        <div class="coach-progress-bar">
+          <div class="coach-progress-fill" id="coachProgressFill" style="width:0%"></div>
+        </div>
+        <div class="coach-progress-labels">
+          <span>Day <span id="coachDayNum">1</span></span>
+          <span>Goal: 66 days</span>
+        </div>
+      </div>
+      <div class="coach-stage" id="coachStageLabel"></div>
+      <p class="coach-message" id="coachMessage"></p>
+      <div class="coach-recommend" id="coachRecommend"></div>
+      <div class="coach-meta">
+        <span class="streak-label">Current streak</span>
+        <span class="streak-value" id="streakValue">0 days</span>
+      </div>
+      <div class="coach-trend" id="coachTrend">
+        <div class="trend-label">Posture self-ratings</div>
+        <div class="trend-value" id="trendValue">No data yet</div>
+        <div class="trend-sub" id="trendSub">Rate your posture each check-in to see your trend.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification permission banner -->
+  <div class="permission-banner hidden" id="permissionBanner">
+    <p>Notifications off. No background reminders.</p>
+    <button class="btn-permission" id="btnPermission">Enable</button>
+  </div>
+
+  <footer>v1.4 &nbsp;·&nbsp; <a href="about.html">about</a> &nbsp;·&nbsp; <a href="how-to-use.html">how to use</a></footer>
+
+<script>
+// ── TIPS ──────────────────────────────────────────────────────────────────────
+const TIPS = [
+  // SEATED POSTURE
+  { id:  1, category: "seated",   tip: "Feet flat on the floor. Not crossed. Not tucked under you. Flat." },
+  { id:  2, category: "seated",   tip: "Sit back in the chair. Your lower back should touch the backrest. If you're perched on the edge you're already losing." },
+  { id:  3, category: "seated",   tip: "Knees at 90 degrees, level with or slightly below your hips. If they're higher than your hips, your chair is too low." },
+  { id:  4, category: "seated",   tip: "Screen at eye level. Top of the monitor should sit at or just below your eye line. Looking down all day is how your neck stages a mutiny." },
+  { id:  5, category: "seated",   tip: "Monitor 20–28 inches from your face. Arm's length is a good quick test. If you're squinting and leaning in, move it closer." },
+  { id:  6, category: "seated",   tip: "Shoulders down. Right now. They're up near your ears, aren't they." },
+  { id:  7, category: "seated",   tip: "Elbows at 90 degrees, close to your body. If your arms are reaching forward to type, your keyboard is too far away." },
+  { id:  8, category: "seated",   tip: "Wrists neutral. Not bent up, not bent down. The keyboard should meet your hands, not the other way around." },
+  { id:  9, category: "seated",   tip: "Head over your shoulders, not jutting forward. Every inch your head drifts forward adds about 10 lbs of effective load on your neck. Do the math on 8 hours." },
+  { id: 10, category: "seated",   tip: "Lower back check: there should be a natural curve there, not a flattened slab against the chair. Lumbar support exists for a reason. Use it." },
+  { id: 11, category: "seated",   tip: "Armrests: your forearms should rest parallel to the floor when your elbows are at 90 degrees. If you're shrugging to use them, lower them. If they're useless beside your body, raise them." },
+  { id: 12, category: "seated",   tip: "Laptop users: your screen is always too low. Your neck is bent 15–30 degrees forward right now. Get a stand and an external keyboard. One purchase. Permanent fix." },
+  { id: 13, category: "seated",   tip: "Crossing your legs feels fine right now. A habit builds hip asymmetry over months. Uncross." },
+
+  // STRETCHES
+  { id: 14, category: "stretch",  tip: "Chin tucks: pull your chin straight back like you're making a double chin. Hold 5 seconds, repeat 10 times. It's not glamorous but it works." },
+  { id: 15, category: "stretch",  tip: "Slow neck rolls. Each direction, controlled. If something crunches, that's your body filing a complaint." },
+  { id: 16, category: "stretch",  tip: "Shoulder rolls. 10 backward, 10 forward. Backward are more important; they undo what forward-hunching does all day." },
+  { id: 17, category: "stretch",  tip: "Chest opener: clasp your hands behind your back, squeeze your shoulder blades together, hold 10 seconds. Feel everything in front of your chest stretch." },
+  { id: 18, category: "stretch",  tip: "Upper trap stretch: tilt your ear toward your shoulder, hold 20–30 seconds. Other side. Don't force it. This muscle is probably knotted right now." },
+  { id: 19, category: "stretch",  tip: "Thoracic extension: put your hands behind your head and gently arch back over the top of your chair. You're trying to get the middle of your spine to move. Stay there 10 seconds." },
+  { id: 20, category: "stretch",  tip: "Wrist flexors: arm out in front, palm up, use your other hand to gently pull the fingers down toward the floor. Hold 20 seconds. Switch." },
+  { id: 21, category: "stretch",  tip: "Wrist extensors: arm out, palm down, other hand gently pulls the fingers down. Different stretch, same 20 seconds. Both directions matter." },
+  { id: 22, category: "stretch",  tip: "Seated spinal twist: sit tall, rotate toward one side of the chair back, put a hand on it for leverage. Hold 15–20 seconds. Other side. Your spine is not meant to be stationary all day." },
+  { id: 23, category: "stretch",  tip: "Hip flexor release: sit at the edge of your chair, extend one leg back behind you with the foot on the floor. Feel the front of that hip open up. Hold 20 seconds. Switch." },
+  { id: 24, category: "stretch",  tip: "Scalene stretch: tilt your ear to your shoulder, then rotate your chin slightly down toward your armpit. Hold 20 seconds. This one hits the neck muscles that pull your head forward, different from the trap stretch and probably more needed." },
+  { id: 25, category: "stretch",  tip: "Levator scapulae: ear toward shoulder, then look down toward the floor on the same side. That dull ache in the corner between your neck and shoulder? That's this muscle. Hold 30 seconds." },
+  { id: 26, category: "stretch",  tip: "Prayer stretch: press your palms together in front of your chest, then slowly lower your hands toward your lap until you feel the stretch across both wrists and forearms. Hold 20 seconds." },
+
+  // MOVEMENT
+  { id: 27, category: "movement", tip: "Stand up. Walk somewhere that isn't your desk. You've been sitting long enough." },
+  { id: 28, category: "movement", tip: "10 standing calf raises while you're up. Calves are the second heart; they pump blood back up from your legs. They've been doing nothing for a while." },
+  { id: 29, category: "movement", tip: "Wall angel: stand with your back against a wall, arms in goal-post position, press everything flat. Slowly raise your arms overhead and bring them back down. 10 reps." },
+  { id: 30, category: "movement", tip: "Doorway stretch: stand in a doorframe, arms at 90 degrees on the frame, lean your body forward gently. Chest and shoulders. Hold 20 seconds." },
+  { id: 31, category: "movement", tip: "Standing figure-4: cross one ankle over the opposite knee, sit back into a shallow squat. Hold 20–30 seconds. Switch legs. Your hips will thank you and stop sending complaints to your lower back." },
+  { id: 32, category: "movement", tip: "Walk to get water. Then drink it. Hydration and movement in one trip." },
+  { id: 33, category: "movement", tip: "5 slow bodyweight squats. Your hip flexors are shortened from sitting. These help undo that." },
+  { id: 34, category: "movement", tip: "Take the long way back to your desk. The work will still be there." },
+  { id: 35, category: "movement", tip: "Desk pushups: hands on the edge of your desk, shoulder-width apart, lean in and push back. 10 reps. Not impressive. Effective." },
+  { id: 36, category: "movement", tip: "March in place for 30 seconds, knees up. Your hip flexors have been shortened into a sitting position for hours. This is them getting a small apology." },
+  { id: 37, category: "movement", tip: "Roll your ankles. Both feet, both directions, 10 each. Sitting cuts circulation to your lower legs and ankles quietly stiffen up without announcing it." },
+  { id: 38, category: "movement", tip: "If you have a standing desk and it's currently in sitting position, raise it. That's the entire reason you own it." },
+
+  // EYES & TENSION
+  { id: 39, category: "eyes",     tip: "20-20-20 rule: look at something 20 feet away for 20 seconds. Do it now. Your eyes have been locked at the same focal distance for a long time and they're exhausted." },
+  { id: 40, category: "eyes",     tip: "Jaw check: unclench. Drop the jaw slightly, let the tongue rest on the roof of the mouth. You've been grinding." },
+  { id: 41, category: "eyes",     tip: "Forehead check: consciously relax the muscles in your forehead. You were furrowing. Everyone is always furrowing." },
+  { id: 42, category: "eyes",     tip: "Breathing reset: 4 counts in, hold for 4, out for 4. Do it three times. Resets the nervous system. Actually works." },
+  { id: 43, category: "eyes",     tip: "Blink deliberately 10 times right now. You've been staring and your blink rate drops to almost nothing. Eyes dry out. Blink." },
+  { id: 44, category: "eyes",     tip: "Palm your eyes: rub your hands together until warm, cup them gently over closed eyes. 30 seconds of darkness. Tension lives around your eyes and this dissolves some of it." },
+  { id: 45, category: "eyes",     tip: "Screen brightness: it should roughly match the ambient light in the room. If it's blazing white in a dim office, your eyes are doing extra work all day." },
+  { id: 46, category: "eyes",     tip: "Text size check: if you're leaning toward the screen to read, the font is too small. Zoom in. Ctrl+scroll. Your monitor doesn't have an ego." },
+  { id: 47, category: "eyes",     tip: "If it's past 4 PM and you haven't turned on Night Mode or a warm color temperature, do it now. Your sleep window opens in a few hours and blue light is already messing with it." },
+
+  // MINDFUL
+  { id: 48, category: "mindful",  tip: "Body scan: shoulders, jaw, hands, lower back. Find one thing that's holding tension. Just one. Let it go. That's enough for now." },
+  { id: 49, category: "mindful",  tip: "Your breathing has probably been shallow for the last hour. One slow breath, deep into the belly. Let your stomach push out on the inhale. Exhale fully. Done." },
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const SNAP = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
+
+let intervalMinutes  = 25;
+let totalSeconds     = 0;
+let remainingSeconds = 0;
+let timerRunning     = false;
+let tickInterval     = null;
+let tipQueue         = [];
+let currentTip       = null;
+let awaitingAck      = false;
+let autoResetTimer   = null;
+let swRegistration   = null;
+let soundEnabled     = true;
+
+const CIRCUMFERENCE = 2 * Math.PI * 62;
+
+// ── ELEMENTS ──────────────────────────────────────────────────────────────────
+const sliderEl      = document.getElementById('intervalSlider');
+const sliderValueEl = document.getElementById('sliderValue');
+const countdownEl   = document.getElementById('countdownDisplay');
+const ringFillEl    = document.getElementById('ringFill');
+const statusDotEl   = document.getElementById('statusDot');
+const btnStart      = document.getElementById('btnStart');
+const btnPause      = document.getElementById('btnPause');
+const btnReset      = document.getElementById('btnReset');
+const ackWrapEl     = document.getElementById('ackWrap');
+const btnAck        = document.getElementById('btnAck');
+const tipTextEl     = document.getElementById('tipText');
+const tipCatEl      = document.getElementById('tipCategory');
+const tipCountEl    = document.getElementById('tipCount');
+const permBanner    = document.getElementById('permissionBanner');
+const btnPerm       = document.getElementById('btnPermission');
+const btnSound      = document.getElementById('btnSound');
+const btnTheme      = document.getElementById('btnTheme');
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+function init() {
+  applySavedTheme();
+  tipCountEl.textContent = `${TIPS.length} tips`;
+  shuffleTipQueue();
+
+  const savedInterval = localStorage.getItem('postureInterval');
+  if (savedInterval) {
+    intervalMinutes = parseInt(savedInterval, 10);
+    const idx = SNAP.indexOf(intervalMinutes);
+    sliderEl.value = idx >= 0 ? idx + 1 : 5;
+  }
+
+  const savedSound = localStorage.getItem('postureSound');
+  if (savedSound === 'off') {
+    soundEnabled = false;
+    btnSound.classList.remove('active');
+  }
+
+  updateSliderDisplay();
+  resetTimer();
+  checkNotificationPermission();
+  registerServiceWorker();
+  try { initCoach(); } catch(e) {}
+}
+
+// ── SERVICE WORKER ────────────────────────────────────────────────────────────
+async function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    swRegistration = await navigator.serviceWorker.register('sw.js', { scope: './' });
+
+    // Listen for messages from SW
+    navigator.serviceWorker.addEventListener('message', (e) => {
+      // New SW activated — reload to get fresh HTML out of the new cache
+      if (e.data && e.data.type === 'SW_UPDATED') {
+        window.location.reload();
+        return;
+      }
+      if (e.data && e.data.type === 'TRIGGER') {
+        // App was backgrounded — SW fired the notification, now we're foregrounded
+        const tip = TIPS.find((t) => t.id === e.data.tipId) || currentTip;
+        if (tip) {
+          currentTip = tip;
+          renderTip(tip);
+        }
+        if (!awaitingAck) {
+          awaitingAck = true;
+          ackWrapEl.classList.add('visible');
+          btnStart.disabled = true;
+          btnPause.disabled = true;
+          timerRunning = false;
+          statusDotEl.classList.remove('active');
+          if (tickInterval) { clearInterval(tickInterval); tickInterval = null; }
+          // Auto-reset if ignored
+          autoResetTimer = setTimeout(() => { if (awaitingAck) acknowledge(true); }, 120000);
+        }
+      }
+    });
+  } catch (err) {
+    // SW unavailable — app still works in foreground
+  }
+}
+
+function scheduleSwNotification(delayMs, tip) {
+  if (!swRegistration) return;
+  const sw = swRegistration.active || swRegistration.installing || swRegistration.waiting;
+  if (!sw) return;
+  sw.postMessage({
+    type:   'SCHEDULE',
+    fireAt: Date.now() + delayMs,
+    tip:    tip,
+  });
+}
+
+function cancelSwNotification() {
+  if (!swRegistration) return;
+  const sw = swRegistration.active || swRegistration.installing || swRegistration.waiting;
+  if (sw) sw.postMessage({ type: 'CANCEL' });
+}
+
+// ── CHIME ─────────────────────────────────────────────────────────────────────
+function playChime() {
+  if (!soundEnabled) return;
+  try {
+    const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+    const play = (freq, startTime, duration, volume) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(volume, startTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+      osc.start(startTime);
+      osc.stop(startTime + duration);
+    };
+    const t = ctx.currentTime;
+    play(880, t,        1.4, 0.35);  // high note
+    play(660, t + 0.18, 1.6, 0.25);  // second note, slightly lower
+    play(550, t + 0.36, 1.8, 0.15);  // faint third note — decay
+  } catch (err) {
+    // Audio not available — silent
+  }
+}
+
+// ── TIPS ──────────────────────────────────────────────────────────────────────
+function shuffleTipQueue() {
+  tipQueue = [...TIPS];
+  for (let i = tipQueue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tipQueue[i], tipQueue[j]] = [tipQueue[j], tipQueue[i]];
+  }
+}
+
+function nextTip() {
+  if (tipQueue.length === 0) shuffleTipQueue();
+  currentTip = tipQueue.pop();
+  renderTip(currentTip);
+  return currentTip;
+}
+
+function renderTip(tip) {
+  const catLabels = {
+    seated:   'Seated posture',
+    stretch:  'Stretch',
+    movement: 'Get up',
+    eyes:     'Eyes & tension',
+    mindful:  'Check in',
+  };
+  tipCatEl.innerHTML  = `<span class="tip-category ${tip.category}">${catLabels[tip.category] || tip.category}</span>`;
+  tipTextEl.innerHTML = `<span>${tip.tip}</span>`;
+}
+
+// ── SLIDER ────────────────────────────────────────────────────────────────────
+sliderEl.min  = 1;
+sliderEl.max  = SNAP.length;
+sliderEl.step = 1;
+
+sliderEl.addEventListener('input', () => {
+  updateSliderDisplay();
+  if (!timerRunning) resetTimer();
+});
+
+function updateSliderDisplay() {
+  const idx       = parseInt(sliderEl.value, 10) - 1;
+  intervalMinutes = SNAP[idx] || 25;
+  sliderValueEl.innerHTML = `${intervalMinutes} <span>min</span>`;
+  localStorage.setItem('postureInterval', intervalMinutes);
+}
+
+// ── TIMER ─────────────────────────────────────────────────────────────────────
+function resetTimer() {
+  totalSeconds     = intervalMinutes * 60;
+  remainingSeconds = totalSeconds;
+  updateDisplay();
+}
+
+function updateDisplay() {
+  const m = Math.floor(remainingSeconds / 60);
+  const s = remainingSeconds % 60;
+  countdownEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+  const progress = totalSeconds > 0 ? remainingSeconds / totalSeconds : 1;
+  const offset   = CIRCUMFERENCE * (1 - progress);
+  ringFillEl.style.strokeDashoffset = offset;
+
+  const warning = remainingSeconds <= 60 && timerRunning;
+  countdownEl.classList.toggle('warning', warning);
+  ringFillEl.classList.toggle('warning', warning);
+}
+
+function startTimer() {
+  if (timerRunning) return;
+  if (remainingSeconds <= 0) resetTimer();
+  try { recordActiveDay(); } catch(e) {} // coach errors must never freeze the timer
+  timerRunning = true;
+  statusDotEl.classList.add('active');
+  btnStart.disabled = true;
+  btnPause.disabled = false;
+
+  // Schedule background notification via SW
+  scheduleSwNotification(remainingSeconds * 1000, tipQueue[tipQueue.length - 1] || TIPS[0]);
+
+  tickInterval = setInterval(() => {
+    if (remainingSeconds <= 0) {
+      triggerReminder();
+    } else {
+      remainingSeconds--;
+      updateDisplay();
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  if (!timerRunning) return;
+  timerRunning = false;
+  statusDotEl.classList.remove('active');
+  clearInterval(tickInterval);
+  tickInterval = null;
+  btnStart.disabled = false;
+  btnPause.disabled = true;
+  cancelSwNotification();
+}
+
+function hardReset() {
+  pauseTimer();
+  clearAutoReset();
+  awaitingAck = false;
+  ackWrapEl.classList.remove('visible');
+  cancelSwNotification();
+  resetTimer();
+}
+
+// ── REMINDER ──────────────────────────────────────────────────────────────────
+function triggerReminder() {
+  clearInterval(tickInterval);
+  tickInterval     = null;
+  timerRunning     = false;
+  remainingSeconds = 0;
+  updateDisplay();
+
+  const tip = nextTip();
+  playChime();
+  fireNotification(tip);
+  cancelSwNotification(); // SW may have fired its own — cancel any pending duplicate
+
+  awaitingAck = true;
+  ackWrapEl.classList.add('visible');
+  btnStart.disabled = true;
+  btnPause.disabled = true;
+  statusDotEl.classList.remove('active');
+  showCheckin();
+
+  autoResetTimer = setTimeout(() => { if (awaitingAck) acknowledge(true); }, 120000);
+}
+
+function acknowledge(auto = false) {
+  awaitingAck = false;
+  clearAutoReset();
+  ackWrapEl.classList.remove('visible');
+  hideCheckin();
+  resetTimer();
+  startTimer();
+}
+
+function clearAutoReset() {
+  if (autoResetTimer) { clearTimeout(autoResetTimer); autoResetTimer = null; }
+}
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
+function checkNotificationPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') {
+    permBanner.classList.remove('hidden');
+  }
+}
+
+async function requestPermission() {
+  if (!('Notification' in window)) return;
+  const result = await Notification.requestPermission();
+  if (result === 'granted') permBanner.classList.add('hidden');
+}
+
+function fireNotification(tip) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const titles = {
+    seated:   'Posture check',
+    stretch:  'Stretch break',
+    movement: 'Time to move',
+    eyes:     'Eyes & tension',
+    mindful:  'Check in',
+  };
+  try {
+    new Notification(titles[tip.category] || 'Posture check', {
+      body:     tip.tip,
+      icon:     './icons/icon-192.png',
+      badge:    './icons/icon-192.png',
+      tag:      'posture-reminder',
+      renotify: true,
+    });
+  } catch (err) {
+    // Notification failed — app is still showing the tip in-UI
+  }
+}
+
+// ── SOUND TOGGLE ──────────────────────────────────────────────────────────────
+btnSound.addEventListener('click', () => {
+  soundEnabled = !soundEnabled;
+  btnSound.classList.toggle('active', soundEnabled);
+  localStorage.setItem('postureSound', soundEnabled ? 'on' : 'off');
+  if (soundEnabled) playChime(); // preview
+});
+
+// ── THEME TOGGLE ──────────────────────────────────────────────────────────────
+function setTheme(theme) {
+  const nextTheme = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = nextTheme;
+  localStorage.setItem('postureTheme', nextTheme);
+  const isLight = nextTheme === 'light';
+  btnTheme.textContent = isLight ? '☀' : '☾';
+  btnTheme.title = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+  btnTheme.setAttribute('aria-label', btnTheme.title);
+
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.setAttribute('content', isLight ? '#f5f3ec' : '#0d0d0d');
+}
+
+function applySavedTheme() {
+  setTheme(localStorage.getItem('postureTheme') || 'dark');
+}
+
+btnTheme.addEventListener('click', () => {
+  const currentTheme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+  setTheme(currentTheme === 'light' ? 'dark' : 'light');
+});
+
+// ── EVENTS ────────────────────────────────────────────────────────────────────
+btnStart.addEventListener('click', startTimer);
+btnPause.addEventListener('click', pauseTimer);
+btnReset.addEventListener('click', hardReset);
+btnAck.addEventListener('click', () => acknowledge(false));
+btnPerm.addEventListener('click', requestPermission);
+
+// Check-in button listeners
+document.getElementById('btnCheckinPoor').addEventListener('click', () => recordCheckin(1));
+document.getElementById('btnCheckinFair').addEventListener('click', () => recordCheckin(2));
+document.getElementById('btnCheckinGood').addEventListener('click', () => recordCheckin(3));
+
+// ── POSTURE CHECK-IN ──────────────────────────────────────────────────────────
+
+const CHECKIN_KEY = 'postureCheckins';
+
+function showCheckin() {
+  const block = document.getElementById('checkinBlock');
+  const saved = document.getElementById('checkinSaved');
+  if (!block) return;
+  block.classList.add('visible');
+  saved.classList.remove('visible');
+  document.querySelectorAll('.btn-checkin').forEach(b => b.classList.remove('selected'));
+}
+
+function hideCheckin() {
+  const block = document.getElementById('checkinBlock');
+  if (block) block.classList.remove('visible');
+}
+
+function recordCheckin(score) {
+  // Highlight selected button
+  document.querySelectorAll('.btn-checkin').forEach(b => b.classList.remove('selected'));
+  const btnMap = { 1: 'btnCheckinPoor', 2: 'btnCheckinFair', 3: 'btnCheckinGood' };
+  const btn = document.getElementById(btnMap[score]);
+  if (btn) btn.classList.add('selected');
+
+  // Show saved confirmation
+  const saved = document.getElementById('checkinSaved');
+  if (saved) saved.classList.add('visible');
+
+  // Persist to localStorage
+  saveCheckin(score);
+}
+
+function saveCheckin(score) {
+  let checkins = loadCheckins();
+  checkins.push({ ts: Date.now(), score });
+  // Prune anything older than 90 days
+  const cutoff = Date.now() - 90 * 86400000;
+  checkins = checkins.filter(c => c.ts >= cutoff);
+  try { localStorage.setItem(CHECKIN_KEY, JSON.stringify(checkins)); } catch(e) {}
+  renderTrend();
+}
+
+function loadCheckins() {
+  try { return JSON.parse(localStorage.getItem(CHECKIN_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+
+function renderTrend() {
+  const valEl = document.getElementById('trendValue');
+  const subEl = document.getElementById('trendSub');
+  if (!valEl || !subEl) return;
+
+  const checkins = loadCheckins();
+  if (checkins.length === 0) {
+    valEl.textContent = 'No data yet';
+    subEl.textContent = 'Rate your posture each check-in to see your trend.';
+    return;
+  }
+
+  const now     = Date.now();
+  const DAY     = 86400000;
+  const thisWeek = checkins.filter(c => c.ts >= now - 7 * DAY);
+  const lastWeek = checkins.filter(c => c.ts >= now - 14 * DAY && c.ts < now - 7 * DAY);
+  const avg      = arr => arr.length ? arr.reduce((s, c) => s + c.score, 0) / arr.length : 0;
+
+  if (thisWeek.length === 0) {
+    valEl.textContent = 'No data this week';
+    const total = checkins.length;
+    subEl.textContent = `${total} total check-in${total !== 1 ? 's' : ''} logged.`;
+    return;
+  }
+
+  const thisAvg = avg(thisWeek);
+  const scoreLabel = thisAvg >= 2.5 ? 'Good' : thisAvg >= 1.5 ? 'Fair' : 'Poor';
+  valEl.textContent = `${thisAvg.toFixed(1)} / 3 · ${scoreLabel}`;
+
+  let sub = `${thisWeek.length} check-in${thisWeek.length !== 1 ? 's' : ''} this week`;
+  if (lastWeek.length > 0) {
+    const diff = thisAvg - avg(lastWeek);
+    if (Math.abs(diff) >= 0.15) {
+      sub += ` · ${diff > 0 ? '↑' : '↓'} ${Math.abs(diff).toFixed(1)} vs last week`;
+    } else {
+      sub += ' · holding steady vs last week';
+    }
+  }
+  subEl.textContent = sub;
+}
+
+// ── HABIT COACH ───────────────────────────────────────────────────────────────
+// Based on Phillippa Lally's 2010 UCL study: habit formation averages 66 days
+// (range 18-254). The popular "21 days" figure comes from Maxwell Maltz's 1960
+// book Psycho-Cybernetics and has no empirical basis. We use 66 as the target.
+
+const HABIT_GOAL_DAYS = 66;
+
+const STAGES = [
+  {
+    label:   'Days 1-14: Building the Trigger',
+    range:   [1, 14],
+    suggest: 5,
+    message: 'Research from University College London found habits take an average of 66 days to form, not 21, despite what you have heard for years. The “21 days” figure came from a 1960 self-help book with no actual data behind it. The real number is messier: anywhere from 18 to 254 days depending on the person and the behavior. The first two weeks are the most critical phase. Start at 5-minute intervals. You are not building endurance yet; you are building the cue. Your basal ganglia needs high-frequency repetition before it begins wiring the automatic response. Consistency matters. Duration does not. Show up every day.',
+  },
+  {
+    label:   'Days 15-28: Forming the Loop',
+    range:   [15, 28],
+    suggest: 10,
+    message: 'The cue-routine-reward loop is actively forming in your basal ganglia, the part of the brain responsible for habit encoding. Dendrites are connecting. Myelin is thickening around the neural pathway, which is what makes the behavior start to feel automatic rather than effortful. You have passed the hardest part: remembering to start. Now push to 10 minutes. You are no longer training frequency. You are training duration.',
+  },
+  {
+    label:   'Days 29-42: The Boring Middle',
+    range:   [29, 42],
+    suggest: 20,
+    message: 'This is where most people quit; not because they have lost interest, but because the novelty is gone and the habit is not fully automatic yet. The UCL data shows dropout rates peak in this window. You are supposed to feel slightly bored by this. That is a sign the behavior is normalizing. The goal right now is to keep showing up even when there is no motivational payoff. Push to 20-minute intervals. Do it because it is on the schedule, not because you feel like it.',
+  },
+  {
+    label:   'Days 43-56: Consolidation',
+    range:   [43, 56],
+    suggest: 30,
+    message: 'Your posture habit is in the consolidation phase. The basal ganglia is finishing its encoding work. At this stage, missing a single day will not undo your progress; but missing three consecutive days can significantly degrade the neural pathway you have spent six weeks building. The threshold for a broken habit sits right around the three-day mark. Stay consistent. 30-minute intervals are the right target now. You are reinforcing, not reminding.',
+  },
+  {
+    label:   'Days 57-65: Final Stretch',
+    range:   [57, 65],
+    suggest: 40,
+    message: 'By day 57, the majority of the neurological encoding is complete. The UCL study found diminishing returns on habit strength after this point; you are not forming the habit so much as cementing it. This is the last stretch. 40-minute intervals. You are in maintenance territory. Missing a day here does not break anything. Finishing does.',
+  },
+  {
+    label:   'Day 66+: Habit Locked In',
+    range:   [66, Infinity],
+    suggest: 60,
+    message: 'You made it. 66 days. The average person abandons a new habit by day 22. After 66 days, the UCL research shows behavior becomes largely automatic; you will begin noticing poor posture without being prompted, and the corrective response will come without conscious effort. Set your interval to whatever feels right and keep the app running as maintenance. The hard work is done. The habit is yours now.',
+  },
+];
+
+function getStage(dayNum) {
+  return STAGES.find((s) => dayNum >= s.range[0] && dayNum <= s.range[1]) || STAGES[STAGES.length - 1];
+}
+
+function getTodayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function loadCoachState() {
+  const today      = getTodayStr();
+  const startDate  = localStorage.getItem('postureStartDate') || today;
+  const lastActive = localStorage.getItem('postureLastActiveDate') || '';
+  const streak     = parseInt(localStorage.getItem('postureStreak') || '0', 10);
+
+  if (!localStorage.getItem('postureStartDate')) {
+    localStorage.setItem('postureStartDate', today);
+  }
+
+  const msPerDay = 86400000;
+  const dayNum   = Math.max(1, Math.floor((new Date(today) - new Date(startDate)) / msPerDay) + 1);
+
+  return { today, lastActive, streak, dayNum };
+}
+
+function recordActiveDay() {
+  const { today, lastActive, streak } = loadCoachState();
+  if (lastActive === today) return;
+
+  const yesterday    = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().slice(0, 10);
+  const newStreak    = lastActive === yesterdayStr ? streak + 1 : 1;
+
+  localStorage.setItem('postureLastActiveDate', today);
+  localStorage.setItem('postureStreak', newStreak);
+
+  renderCoach();
+}
+
+function renderCoach() {
+  const { dayNum, streak } = loadCoachState();
+  const stage = getStage(dayNum);
+  const pct   = Math.min(100, (dayNum / HABIT_GOAL_DAYS) * 100).toFixed(1);
+
+  document.getElementById('coachDayBadge').textContent      = `Day ${dayNum}`;
+  document.getElementById('coachDayNum').textContent        = dayNum;
+  document.getElementById('coachProgressFill').style.width  = `${pct}%`;
+  document.getElementById('coachStageLabel').textContent    = stage.label;
+  document.getElementById('coachMessage').textContent       = stage.message;
+  document.getElementById('streakValue').textContent        = `${streak} day${streak !== 1 ? 's' : ''}`;
+
+  const rec = document.getElementById('coachRecommend');
+  rec.innerHTML = dayNum >= HABIT_GOAL_DAYS
+    ? `<strong>Suggested interval:</strong> Whatever feels natural. You've earned the flexibility.`
+    : `<strong>Suggested interval for this stage:</strong> ${stage.suggest} min. Slide left if you haven't already.`;
+}
+
+function initCoach() {
+  const body   = document.getElementById('coachBody');
+  const toggle = document.getElementById('btnCoachToggle');
+  if (!body || !toggle) return; // guard: old SW may serve HTML without coach elements
+
+  // Default to collapsed so it never covers the timer on first load
+  const stored = localStorage.getItem('postureCoachCollapsed');
+  const collapsed = stored === null ? true : stored === '1';
+  if (collapsed) {
+    body.classList.add('collapsed');
+    toggle.textContent = '▸';
+    if (stored === null) localStorage.setItem('postureCoachCollapsed', '1');
+  }
+
+  // Register toggle here so elements are guaranteed to exist
+  document.getElementById('coachToggle').addEventListener('click', () => {
+    const b = document.getElementById('coachBody');
+    const t = document.getElementById('btnCoachToggle');
+    const isNowCollapsed = b.classList.toggle('collapsed');
+    t.textContent = isNowCollapsed ? '▸' : '▾';
+    localStorage.setItem('postureCoachCollapsed', isNowCollapsed ? '1' : '0');
+  });
+
+  renderCoach();
+  renderTrend();
+}
+
+// ── BACKGROUND / FOREGROUND SYNC ─────────────────────────────────────────────
+// When the app is hidden, Android throttles setInterval to ~1 tick/min or less.
+// We record the exact time we were hidden and the remaining seconds at that point.
+// When the app returns to foreground we recalculate elapsed time and either:
+//   (a) Sync remaining seconds to compensate for throttled interval, or
+//   (b) Trigger the reminder if the timer ran out while we were hidden.
+// This is the recovery path for when the service worker gets killed by the OS.
+
+let hiddenAt        = null;
+let remainingAtHide = 0;
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    // ── Going to background ──
+    if (timerRunning && !awaitingAck) {
+      hiddenAt        = Date.now();
+      remainingAtHide = remainingSeconds;
+      // Re-send a fresh SCHEDULE to the SW with the current remaining time.
+      // If the SW was previously terminated, this gives it a new chance.
+      const nextTipForSW = tipQueue[tipQueue.length - 1] || currentTip || TIPS[0];
+      scheduleSwNotification(remainingSeconds * 1000, nextTipForSW);
+    }
+  } else {
+    // ── Returning to foreground ──
+    if (hiddenAt !== null && !awaitingAck) {
+      const elapsed = Math.floor((Date.now() - hiddenAt) / 1000);
+
+      if (timerRunning && elapsed >= remainingAtHide) {
+        // Timer ran out while we were hidden and the SW missed it
+        cancelSwNotification();
+        clearInterval(tickInterval);
+        tickInterval     = null;
+        remainingSeconds = 0;
+        updateDisplay();
+        triggerReminder();
+      } else if (timerRunning) {
+        // Timer still has time — sync remaining seconds to correct for throttling
+        remainingSeconds = Math.max(0, remainingAtHide - elapsed);
+        updateDisplay();
+        // Re-send updated schedule so the SW stays in sync
+        const nextTipForSW = tipQueue[tipQueue.length - 1] || currentTip || TIPS[0];
+        scheduleSwNotification(remainingSeconds * 1000, nextTipForSW);
+      }
+    }
+    hiddenAt = null;
+  }
+});
+
+init();
+</script>
+</body>
+</html>

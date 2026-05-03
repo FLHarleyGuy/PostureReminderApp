@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0d0d0d" />
+  <title>How to Use | Posture Check</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0d; --surface: #161616; --border: #2a2a2a; --accent: #c8f060;
+      --muted: #555; --text: #e8e8e8; --text-dim: #888; --danger: #ff5f5f;
+      --radius: 12px; --mono: 'Space Mono', monospace; --sans: 'DM Sans', sans-serif;
+    }
+    :root[data-theme="light"] {
+      --bg: #f5f3ec; --surface: #fffdf6; --border: #d9d2bf; --accent: #526f13;
+      --muted: #827a68; --text: #181712; --text-dim: #595441; --danger: #b83f3f;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); font-weight: 400; -webkit-font-smoothing: antialiased; }
+    body { display: flex; flex-direction: column; align-items: center; min-height: 100dvh; padding: 24px 20px 40px; }
+    header { width: 100%; max-width: 620px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+    header a { color: inherit; text-decoration: none; }
+    header h1 { font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+    .app-nav { display: flex; gap: 12px; margin-left: auto; }
+    .app-nav a { color: var(--text-dim); font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; transition: color 0.2s; }
+    .app-nav a:hover, .app-nav a:focus-visible, .app-nav a[aria-current="page"] { color: var(--accent); }
+    .btn-icon { background: transparent; border: 1px solid var(--border); color: var(--muted); width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+    .btn-icon:hover { border-color: var(--text-dim); color: var(--text); }
+    main { width: 100%; max-width: 620px; display: flex; flex-direction: column; gap: 18px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 24px; }
+    .eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    h2 { font-family: var(--mono); font-size: 22px; line-height: 1.25; letter-spacing: -0.02em; color: var(--accent); margin-bottom: 18px; }
+    .steps { counter-reset: step; display: grid; gap: 16px; }
+    .step { counter-increment: step; border-top: 1px solid var(--border); padding-top: 16px; display: grid; grid-template-columns: 34px 1fr; gap: 12px; }
+    .step:first-child { border-top: 0; padding-top: 0; }
+    .step::before { content: counter(step); width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); font-family: var(--mono); font-size: 11px; font-weight: 700; }
+    .step strong { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+    .step span, p { display: block; font-size: 14px; line-height: 1.65; color: var(--text); font-weight: 300; }
+    p + p { margin-top: 14px; }
+    .note { margin-top: 18px; padding: 14px 16px; border: 1px solid rgba(200,240,96,0.25); border-radius: 8px; background: rgba(200,240,96,0.06); color: var(--text); font-size: 13px; line-height: 1.6; font-weight: 300; }
+    .btn-row { display: flex; gap: 10px; margin-top: 22px; }
+    .btn { flex: 1; padding: 13px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--text-dim); font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-align: center; text-decoration: none; text-transform: uppercase; transition: all 0.2s; }
+    .btn:hover, .btn:focus-visible { border-color: var(--text-dim); color: var(--text); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+    footer { margin-top: auto; padding-top: 28px; font-size: 10px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.08em; text-align: center; }
+    @media (max-width: 520px) { header { flex-wrap: wrap; max-width: 420px; } main { max-width: 420px; } .app-nav { order: 3; width: 100%; } .btn-row { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="./" aria-label="Posture Check home"><h1>Posture Check</h1></a>
+    <nav class="app-nav" aria-label="App pages">
+      <a href="./">&#8592; Back to app</a>
+      <a href="about.html">About</a>
+      <a href="how-to-use.html" aria-current="page">How to use</a>
+    </nav>
+    <button class="btn-icon" id="btnTheme" title="Switch to light mode" aria-label="Switch to light mode">&#9790;</button>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="eyebrow">Everyday use</div>
+      <h2>Set the rhythm, then let it tap you on the shoulder.</h2>
+      <div class="steps">
+        <div class="step"><div>
+          <strong>Pick an interval</strong>
+          <span>Move the reminder slider bar left or right. The app snaps to preset intervals from 5 to 60 minutes and saves your choice automatically.</span>
+        </div></div>
+        <div class="step"><div>
+          <strong>Start the timer</strong>
+          <span>Press Start. The ring counts down and the small status dot lights up while the reminder is running.</span>
+        </div></div>
+        <div class="step"><div>
+          <strong>Pause or reset</strong>
+          <span>Pause stops the current countdown and background notification. Reset stops everything and returns the countdown to the interval you picked.</span>
+        </div></div>
+        <div class="step"><div>
+          <strong>Respond to the reminder</strong>
+          <span>When a reminder fires, read the tip, adjust your posture or take the suggested break, then press Got it to restart the timer. If you ignore it, the app restarts itself after 2 minutes.</span>
+        </div></div>
+        <div class="step"><div>
+          <strong>Use the chime toggle</strong>
+          <span>The music-note button turns the sound on or off. Turning it back on plays a quick preview chime.</span>
+        </div></div>
+        <div class="step"><div>
+          <strong>Switch themes</strong>
+          <span>Use the moon or sun button in the top bar to swap between dark mode and light mode. Your theme is saved on this device.</span>
+        </div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="eyebrow">Notifications</div>
+      <h2>Enable notifications for background reminders.</h2>
+      <p>If notifications are not already allowed, the app shows a banner that says notifications are off. Press Enable to open the browser permission prompt.</p>
+      <p>When permission is granted and the timer is running, the service worker schedules the next reminder so it can appear while the app is in the background. If notifications are blocked or unsupported, the timer still works while the app is open.</p>
+      <p>Clicking a notification brings the app back into focus and shows the same reminder tip in the app.</p>
+      <div class="note">The service worker only schedules reminders after you start the timer. Pause and reset both cancel the pending background reminder.</div>
+    </section>
+
+    <section class="card">
+      <div class="eyebrow">Habit Coach</div>
+      <h2>The coach tracks your habit, not just your timer.</h2>
+      <p>Below the main timer you'll find the Habit Coach panel. It opens and closes by clicking the header. Here's what it does and why it's built the way it is.</p>
+      <div class="steps">
+        <div class="step"><div>
+          <strong>The 66-day target</strong>
+          <span>The popular claim that habits take 21 days has no research behind it; it came from a 1960 self-help book. A 2010 study from University College London tracked actual habit formation across 96 participants and found it takes an average of 66 days, with a range of 18 to 254 depending on the person and the behavior. The coach uses 66 as the goal because that's what the data says.</span>
+        </div></div>
+        <div class="step"><div>
+          <strong>Start at 5 minutes</strong>
+          <span>In the first two weeks, the coach recommends a 5-minute interval. This isn't about posture endurance; it's about building the neural trigger. Your basal ganglia (the habit-encoding part of the brain) needs high-frequency repetition before it starts wiring the automatic response. Frequency matters more than duration in this phase. Every day you use the app counts toward your streak.</span>
+        </div></div>
+        <div class="step"><div>
+          <strong>Interval progression</strong>
+          <span>The coach suggests a longer interval as you move through the 66-day journey: 5 minutes in weeks 1–2, 10 in weeks 3–4, 20 in weeks 5–6, 30 in weeks 7–8, 40 in week 9, and 60 minutes after day 66. These are suggestions, not locks. The slider is always yours to adjust. The idea is that as your awareness builds, you need less frequent reminders to stay on track.</span>
+        </div></div>
+        <div class="step"><div>
+          <strong>Streak tracking</strong>
+          <span>The coach tracks your consecutive-day streak. A day counts when you press Start. If you miss a day, the streak resets to 1, not zero, because you're still on the journey. The UCL research shows dropout peaks in days 29–42, the "boring middle" after novelty fades but before the habit is automatic. The streak counter is there to make that stretch visible and survivable.</span>
+        </div></div>
+        <div class="step"><div>
+          <strong>Progress bar</strong>
+          <span>The bar tracks elapsed calendar days since your first session, not sessions completed. Day 1 is the first day you pressed Start. After day 66, the bar stays full and the coach message shifts to maintenance mode.</span>
+        </div></div>
+      </div>
+      <div class="note">The coach is collapsed by default so it stays out of the way. Open it when you want context on where you are in the habit cycle, then close it again. All data is stored locally on your device and never sent anywhere.</div>
+    </section>
+
+    <section class="card">
+      <div class="eyebrow">Install</div>
+      <h2>Add it to your home screen.</h2>
+      <p>This app ships as an installable PWA with a manifest, icons, standalone display mode, and an offline cache. There is no custom install button inside the app.</p>
+      <p>To install it, open the app in a supported browser and use the browser menu. In Chrome, choose Install app or Add to Home screen. Once installed, it opens in its own app-style window instead of a normal browser tab.</p>
+      <p>The app caches the main screen, these help pages, the tips file, the manifest, and app icons for offline loading after the first visit.</p>
+      <div class="btn-row">
+        <a class="btn primary" href="./">Open app</a>
+        <a class="btn" href="about.html">About</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>posture-check &nbsp;&middot;&nbsp; <a href="about.html" style="color:inherit;text-decoration:none;">about</a></footer>
+
+  <script>
+    const btnTheme = document.getElementById('btnTheme');
+
+    function setTheme(theme) {
+      const nextTheme = theme === 'light' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = nextTheme;
+      localStorage.setItem('postureTheme', nextTheme);
+      const isLight = nextTheme === 'light';
+      btnTheme.textContent = isLight ? '☀' : '☾';
+      btnTheme.title = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+      btnTheme.setAttribute('aria-label', btnTheme.title);
+      const themeMeta = document.querySelector('meta[name="theme-color"]');
+      if (themeMeta) themeMeta.setAttribute('content', isLight ? '#f5f3ec' : '#0d0d0d');
+    }
+
+    setTheme(localStorage.getItem('postureTheme') || 'dark');
+
+    btnTheme.addEventListener('click', () => {
+      const current = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+      setTheme(current === 'light' ? 'dark' : 'light');
+    });
+  </script>
+</body>
+</html>
