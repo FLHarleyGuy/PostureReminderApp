@@ -61,3 +61,12 @@ The service worker holds the notification schedule when the app is backgrounded 
 ---
 
 *Built April 2026.*
+
+## Version history
+
+### v1.4 (2026-05-03)
+- Posture check-in prompt (Poor/Fair/Good) fires on each reminder
+- Ratings stored in localStorage with timestamps, 90-day rolling window
+- Posture Trend section in Habit Coach card — weekly average, check-in count, improvement vs prior week
+- SW cache bumped to posture-app-v7
+- `mindful: 'Check in'` added to CAT_TITLES in sw.js — mindful check-in category now displays correct notification title
