@@ -1217,6 +1217,27 @@ async function requestPermission() {
   if (result === 'granted') permBanner.classList.add('hidden');
 }
 
+const MESSAGES = [
+  "Sit back, unclench, keep working. That counts.",
+  "Take ten seconds and make the next hour less stupid.",
+  "Good moment for a reset. You do not need to become a wellness person.",
+  "Sit like a person again.",
+  "The desk did not ask you to fold yourself in half.",
+  "This is a posture reminder. Tragically, it is probably right.",
+  "Your chair has a backrest. Bold concept, using it.",
+  "This meeting could have been an email, but this reminder is actually useful.",
+  "Shoulders down. I know, groundbreaking technology.",
+  "Your neck is not a kickstand.",
+  "Great news, your spine still accepts corrections.",
+  "You bought the chair. You can use the whole chair.",
+  "Your monitor is not going to get closer because you believe in it.",
+  "The work will still be there after one normal human breath.",
+];
+
+function randomMessage() {
+  return MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
+}
+
 function fireNotification(tip) {
   if (!('Notification' in window) || Notification.permission !== 'granted') return;
   const titles = {
@@ -1228,7 +1249,7 @@ function fireNotification(tip) {
   };
   try {
     new Notification(titles[tip.category] || 'Posture check', {
-      body:     tip.tip,
+      body:     randomMessage(),
       icon:     './icons/icon-192.png',
       badge:    './icons/icon-192.png',
       tag:      'posture-reminder',
@@ -1524,32 +1545,4 @@ document.addEventListener('visibilitychange', () => {
       scheduleSwNotification(remainingSeconds * 1000, nextTipForSW);
     }
   } else {
-    // ── Returning to foreground ──
-    if (hiddenAt !== null && !awaitingAck) {
-      const elapsed = Math.floor((Date.now() - hiddenAt) / 1000);
-
-      if (timerRunning && elapsed >= remainingAtHide) {
-        // Timer ran out while we were hidden and the SW missed it
-        cancelSwNotification();
-        clearInterval(tickInterval);
-        tickInterval     = null;
-        remainingSeconds = 0;
-        updateDisplay();
-        triggerReminder();
-      } else if (timerRunning) {
-        // Timer still has time — sync remaining seconds to correct for throttling
-        remainingSeconds = Math.max(0, remainingAtHide - elapsed);
-        updateDisplay();
-        // Re-send updated schedule so the SW stays in sync
-        const nextTipForSW = tipQueue[tipQueue.length - 1] || currentTip || TIPS[0];
-        scheduleSwNotification(remainingSeconds * 1000, nextTipForSW);
-      }
-    }
-    hiddenAt = null;
-  }
-});
-
-init();
-</script>
-</body>
-</html>
+    // ── Returning to f

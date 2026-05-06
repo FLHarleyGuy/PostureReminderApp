@@ -1,7 +1,7 @@
-// sw.js — Posture Check PWA Service Worker v6
+// sw.js — Posture Check PWA Service Worker v7
 // Handles: caching, background notification scheduling, notification click
 
-const CACHE_NAME = 'posture-app-v7';
+const CACHE_NAME = 'posture-app-v8';
 const ASSETS = [
   './',
   './index.html',
@@ -47,18 +47,40 @@ self.addEventListener('fetch', (e) => {
   );
 });
 
+// ── REMINDER MESSAGES ─────────────────────────────────────────────────────────
+const MESSAGES = [
+  "Sit back, unclench, keep working. That counts.",
+  "Take ten seconds and make the next hour less stupid.",
+  "Good moment for a reset. You do not need to become a wellness person.",
+  "Sit like a person again.",
+  "The desk did not ask you to fold yourself in half.",
+  "This is a posture reminder. Tragically, it is probably right.",
+  "Your chair has a backrest. Bold concept, using it.",
+  "This meeting could have been an email, but this reminder is actually useful.",
+  "Shoulders down. I know, groundbreaking technology.",
+  "Your neck is not a kickstand.",
+  "Great news, your spine still accepts corrections.",
+  "You bought the chair. You can use the whole chair.",
+  "Your monitor is not going to get closer because you believe in it.",
+  "The work will still be there after one normal human breath.",
+];
+
+function randomMessage() {
+  return MESSAGES[Math.floor(Math.random() * MESSAGES.length)];
+}
+
 // ── NOTIFICATION ──────────────────────────────────────────────────────────────
 const CAT_TITLES = {
-  seated:  'Posture check',
-  stretch: 'Stretch break',
-  movement:'Time to move',
-  eyes:    'Eyes & tension',
-  mindful: 'Check in',
+  seated:   'Posture check',
+  stretch:  'Stretch break',
+  movement: 'Time to move',
+  eyes:     'Eyes & tension',
+  mindful:  'Check in',
 };
 
 async function fireNotification(tip) {
   await self.registration.showNotification(CAT_TITLES[tip.category] || 'Posture check', {
-    body:     tip.tip,
+    body:     randomMessage(),
     icon:     './icons/icon-192.png',
     badge:    './icons/icon-192.png',
     tag:      'posture-reminder',
@@ -68,32 +90,4 @@ async function fireNotification(tip) {
   });
   // Tell any open app windows to show the ack UI
   const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-  clients.forEach((c) => c.postMessage({ type: 'TRIGGER', tipId: tip.id }));
-}
-
-// ── BACKGROUND SCHEDULING ─────────────────────────────────────────────────────
-// Uses event.waitUntil() so the browser keeps the SW alive for the full duration.
-// scheduleGeneration prevents a cancelled schedule from firing after a new one is set.
-
-let scheduleGeneration = 0;
-let pendingSchedule    = null; // { fireAt, tip } — used for fetch-based recovery
-
-self.addEventListener('message', (e) => {
-  if (!e.data) return;
-
-  if (e.data.type === 'SCHEDULE') {
-    scheduleGeneration++;
-    const gen = scheduleGeneration;
-    const tip = e.data.tip;
-
-    pendingSchedule = { fireAt: e.data.fireAt, tip };
-
-    const delay = Math.max(0, e.data.fireAt - Date.now());
-
-    // event.waitUntil keeps the SW alive until this promise resolves.
-    // Without this, Android terminates the SW before the timeout fires.
-    e.waitUntil(
-      new Promise((resolve) => {
-        setTimeout(async () => {
-          // Only fire if this schedule hasn't been superseded or cancelled
-          if (scheduleGeneration
+  clients.forEach((c) => c.postMessage({ type: 'TRIGGER
