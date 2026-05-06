@@ -1545,4 +1545,32 @@ document.addEventListener('visibilitychange', () => {
       scheduleSwNotification(remainingSeconds * 1000, nextTipForSW);
     }
   } else {
-    // ── Returning to f
+    // ── Returning to foreground ──
+    if (hiddenAt !== null && !awaitingAck) {
+      const elapsed = Math.floor((Date.now() - hiddenAt) / 1000);
+
+      if (timerRunning && elapsed >= remainingAtHide) {
+        // Timer ran out while we were hidden and the SW missed it
+        cancelSwNotification();
+        clearInterval(tickInterval);
+        tickInterval     = null;
+        remainingSeconds = 0;
+        updateDisplay();
+        triggerReminder();
+      } else if (timerRunning) {
+        // Timer still has time — sync remaining seconds to correct for throttling
+        remainingSeconds = Math.max(0, remainingAtHide - elapsed);
+        updateDisplay();
+        // Re-send updated schedule so the SW stays in sync
+        const nextTipForSW = tipQueue[tipQueue.length - 1] || currentTip || TIPS[0];
+        scheduleSwNotification(remainingSeconds * 1000, nextTipForSW);
+      }
+    }
+    hiddenAt = null;
+  }
+});
+
+init();
+</script>
+</body>
+</html>
