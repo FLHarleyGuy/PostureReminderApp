@@ -692,6 +692,274 @@
       line-height: 1.5;
     }
 
+    /* ── WORK SESSION ── */
+    .session-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .session-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      font-family: var(--mono);
+    }
+
+    .session-presets {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-session {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-session:hover { border-color: var(--accent); color: var(--accent); }
+
+    .session-active-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(200, 240, 96, 0.05);
+      border: 1px solid rgba(200, 240, 96, 0.2);
+      border-radius: 8px;
+    }
+
+    .session-active-text {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+    }
+
+    .btn-end-session {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-end-session:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── PAUSE PRESETS ── */
+    .pause-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .pause-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      font-family: var(--mono);
+    }
+
+    .pause-buttons {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-pause-for {
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-pause-for:hover { border-color: var(--text-dim); color: var(--text); }
+
+    .pause-active-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(136, 136, 136, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .pause-active-text {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+    }
+
+    .btn-resume {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-resume:hover { background: rgba(200, 240, 96, 0.1); }
+
+    /* ── STATS CARD ── */
+    .stats-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 16px;
+    }
+
+    .stats-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .stats-header:hover .stats-title { color: var(--text); }
+
+    .stats-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      transition: color 0.2s;
+    }
+
+    .stats-body {
+      padding: 0 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .stats-body.collapsed { display: none; }
+
+    .stats-row {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .stat-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 14px 0;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat-item:last-child { border-right: none; }
+
+    .stat-value {
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .week-bars-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .week-bars-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .week-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      height: 52px;
+    }
+
+    .week-bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .week-bar {
+      width: 100%;
+      background: var(--accent);
+      border-radius: 3px 3px 0 0;
+      opacity: 0.75;
+      transition: height 0.4s ease;
+    }
+
+    .week-bar.today { opacity: 1; box-shadow: 0 0 8px rgba(200, 240, 96, 0.3); }
+    .week-bar.empty { background: var(--border); opacity: 1; }
+
+    .week-day-label {
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .week-day-label.today { color: var(--accent); }
+
     /* ── FOOTER ── */
     footer {
       margin-top: auto;
@@ -783,6 +1051,35 @@
       <button class="btn" id="btnReset">Reset</button>
     </div>
 
+    <!-- Work Session Presets -->
+    <div class="session-block">
+      <div class="session-label">Quick session</div>
+      <div class="session-presets" id="sessionPresets">
+        <button class="btn-session" data-min="25">25 min</button>
+        <button class="btn-session" data-min="45">45 min</button>
+        <button class="btn-session" data-min="90">90 min</button>
+      </div>
+      <div class="session-active-row hidden" id="sessionActiveRow">
+        <span class="session-active-text">Session · <span id="sessionCountdown">--</span></span>
+        <button class="btn-end-session" id="btnEndSession">End</button>
+      </div>
+    </div>
+
+    <!-- Pause Presets -->
+    <div class="pause-block hidden" id="pauseBlock">
+      <div class="pause-label">Pause for</div>
+      <div class="pause-buttons" id="pauseButtons">
+        <button class="btn-pause-for" data-min="30">30 min</button>
+        <button class="btn-pause-for" data-min="60">1 hr</button>
+        <button class="btn-pause-for" data-tomorrow="1">Tomorrow</button>
+        <button class="btn-pause-for" data-min="480">Presentation</button>
+      </div>
+      <div class="pause-active-row hidden" id="pauseActiveRow">
+        <span class="pause-active-text">Paused · <span id="pauseCountdown">--</span></span>
+        <button class="btn-resume" id="btnResumePause">Resume</button>
+      </div>
+    </div>
+
     <!-- Acknowledge -->
     <div class="ack-wrap" id="ackWrap">
       <button class="btn-ack" id="btnAck">Got it / Reset timer</button>
@@ -844,13 +1141,41 @@
     </div>
   </div>
 
+  <!-- Seven-Day Stats -->
+  <div class="stats-card" id="statsCard">
+    <div class="stats-header" id="statsToggle">
+      <div class="stats-title">◈ Seven-Day Stats</div>
+      <button class="btn-icon" id="btnStatsToggle" aria-label="Toggle stats">▸</button>
+    </div>
+    <div class="stats-body collapsed" id="statsBody">
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-value" id="statToday">0</div>
+          <div class="stat-label">Today</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statStreak">0</div>
+          <div class="stat-label">Streak</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="statLongest">0</div>
+          <div class="stat-label">Best</div>
+        </div>
+      </div>
+      <div class="week-bars-wrap">
+        <div class="week-bars-label">Last 7 days</div>
+        <div class="week-bars" id="weekBars"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Notification permission banner -->
   <div class="permission-banner hidden" id="permissionBanner">
     <p>Notifications off. No background reminders.</p>
     <button class="btn-permission" id="btnPermission">Enable</button>
   </div>
 
-  <footer>v1.4 &nbsp;·&nbsp; <a href="about.html">about</a> &nbsp;·&nbsp; <a href="how-to-use.html">how to use</a></footer>
+  <footer>v1.6 &nbsp;·&nbsp; <a href="about.html">about</a> &nbsp;·&nbsp; <a href="how-to-use.html">how to use</a></footer>
 
 <script>
 // ── TIPS ──────────────────────────────────────────────────────────────────────
@@ -930,6 +1255,14 @@ let autoResetTimer   = null;
 let swRegistration   = null;
 let soundEnabled     = true;
 
+// Work session
+let sessionEndTime   = null;
+let sessionTickId    = null;
+
+// Pause presets
+let pausedUntil      = null;
+let pauseTickId      = null;
+
 const CIRCUMFERENCE = 2 * Math.PI * 62;
 
 // ── ELEMENTS ──────────────────────────────────────────────────────────────────
@@ -975,6 +1308,9 @@ function init() {
   checkNotificationPermission();
   registerServiceWorker();
   try { initCoach(); } catch(e) {}
+  try { initSession(); } catch(e) {}
+  try { initPause(); } catch(e) {}
+  try { initStats(); } catch(e) {}
 }
 
 // ── SERVICE WORKER ────────────────────────────────────────────────────────────
@@ -1134,6 +1470,8 @@ function startTimer() {
   btnStart.disabled = true;
   btnPause.disabled = false;
 
+  renderPauseUI();
+
   // Schedule background notification via SW
   scheduleSwNotification(remainingSeconds * 1000, tipQueue[tipQueue.length - 1] || TIPS[0]);
 
@@ -1156,6 +1494,7 @@ function pauseTimer() {
   btnStart.disabled = false;
   btnPause.disabled = true;
   cancelSwNotification();
+  renderPauseUI();
 }
 
 function hardReset() {
@@ -1195,6 +1534,10 @@ function acknowledge(auto = false) {
   clearAutoReset();
   ackWrapEl.classList.remove('visible');
   hideCheckin();
+  if (!auto) {
+    recordAck();
+    try { renderStats(); } catch(e) {}
+  }
   resetTimer();
   startTimer();
 }
@@ -1297,6 +1640,24 @@ btnPause.addEventListener('click', pauseTimer);
 btnReset.addEventListener('click', hardReset);
 btnAck.addEventListener('click', () => acknowledge(false));
 btnPerm.addEventListener('click', requestPermission);
+
+// Work session preset buttons
+document.querySelectorAll('.btn-session').forEach(btn => {
+  btn.addEventListener('click', () => startSession(parseInt(btn.dataset.min, 10)));
+});
+document.getElementById('btnEndSession').addEventListener('click', () => endSession(false));
+
+// Pause preset buttons
+document.querySelectorAll('.btn-pause-for').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.tomorrow) {
+      pauseFor(tomorrowMorningMs());
+    } else {
+      pauseFor(parseInt(btn.dataset.min, 10) * 60 * 1000);
+    }
+  });
+});
+document.getElementById('btnResumePause').addEventListener('click', resumeFromPause);
 
 // Check-in button listeners
 document.getElementById('btnCheckinPoor').addEventListener('click', () => recordCheckin(1));
@@ -1404,7 +1765,7 @@ const STAGES = [
     label:   'Days 1-14: Building the Trigger',
     range:   [1, 14],
     suggest: 5,
-    message: 'Research from University College London found habits take an average of 66 days to form, not 21, despite what you have heard for years. The “21 days” figure came from a 1960 self-help book with no actual data behind it. The real number is messier: anywhere from 18 to 254 days depending on the person and the behavior. The first two weeks are the most critical phase. Start at 5-minute intervals. You are not building endurance yet; you are building the cue. Your basal ganglia needs high-frequency repetition before it begins wiring the automatic response. Consistency matters. Duration does not. Show up every day.',
+    message: 'Research from University College London found habits take an average of 66 days to form, not 21, despite what you have heard for years. The "21 days" figure came from a 1960 self-help book with no actual data behind it. The real number is messier: anywhere from 18 to 254 days depending on the person and the behavior. The first two weeks are the most critical phase. Start at 5-minute intervals. You are not building endurance yet; you are building the cue. Your basal ganglia needs high-frequency repetition before it begins wiring the automatic response. Consistency matters. Duration does not. Show up every day.',
   },
   {
     label:   'Days 15-28: Forming the Loop',
@@ -1473,8 +1834,10 @@ function recordActiveDay() {
 
   localStorage.setItem('postureLastActiveDate', today);
   localStorage.setItem('postureStreak', newStreak);
+  updateLongestStreak(newStreak);
 
   renderCoach();
+  try { renderStats(); } catch(e) {}
 }
 
 function renderCoach() {
@@ -1498,10 +1861,9 @@ function renderCoach() {
 function initCoach() {
   const body   = document.getElementById('coachBody');
   const toggle = document.getElementById('btnCoachToggle');
-  if (!body || !toggle) return; // guard: old SW may serve HTML without coach elements
+  if (!body || !toggle) return;
 
-  // Default to collapsed so it never covers the timer on first load
-  const stored = localStorage.getItem('postureCoachCollapsed');
+  const stored    = localStorage.getItem('postureCoachCollapsed');
   const collapsed = stored === null ? true : stored === '1';
   if (collapsed) {
     body.classList.add('collapsed');
@@ -1509,7 +1871,6 @@ function initCoach() {
     if (stored === null) localStorage.setItem('postureCoachCollapsed', '1');
   }
 
-  // Register toggle here so elements are guaranteed to exist
   document.getElementById('coachToggle').addEventListener('click', () => {
     const b = document.getElementById('coachBody');
     const t = document.getElementById('btnCoachToggle');
@@ -1520,6 +1881,268 @@ function initCoach() {
 
   renderCoach();
   renderTrend();
+}
+
+// ── WORK SESSIONS ─────────────────────────────────────────────────────────────
+const SESSION_KEY = 'postureSessionEnd';
+
+function startSession(minutes) {
+  sessionEndTime = Date.now() + minutes * 60 * 1000;
+  localStorage.setItem(SESSION_KEY, String(sessionEndTime));
+  if (!timerRunning && !awaitingAck) startTimer();
+  renderSessionUI();
+  tickSession();
+}
+
+function endSession(expired) {
+  clearInterval(sessionTickId);
+  sessionTickId  = null;
+  sessionEndTime = null;
+  localStorage.removeItem(SESSION_KEY);
+  renderSessionUI();
+  if (expired) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        new Notification('Session complete', {
+          body: 'Your work session has ended. Good work.',
+          icon: './icons/icon-192.png',
+          tag:  'posture-session',
+        });
+      } catch(e) {}
+    }
+  }
+}
+
+function tickSession() {
+  clearInterval(sessionTickId);
+  sessionTickId = setInterval(() => {
+    if (!sessionEndTime) { clearInterval(sessionTickId); return; }
+    const rem = sessionEndTime - Date.now();
+    if (rem <= 0) {
+      endSession(true);
+    } else {
+      const sec = Math.ceil(rem / 1000);
+      const h   = Math.floor(sec / 3600);
+      const m   = Math.floor((sec % 3600) / 60);
+      const s   = sec % 60;
+      const txt = h > 0
+        ? `${h}h ${m}m left`
+        : m > 0
+          ? `${m}m ${String(s).padStart(2,'0')}s left`
+          : `${s}s left`;
+      const el = document.getElementById('sessionCountdown');
+      if (el) el.textContent = txt;
+    }
+  }, 1000);
+}
+
+function renderSessionUI() {
+  const presets   = document.getElementById('sessionPresets');
+  const activeRow = document.getElementById('sessionActiveRow');
+  if (!presets || !activeRow) return;
+  const isActive = !!(sessionEndTime && sessionEndTime > Date.now());
+  presets.classList.toggle('hidden', isActive);
+  activeRow.classList.toggle('hidden', !isActive);
+}
+
+function initSession() {
+  const saved = localStorage.getItem(SESSION_KEY);
+  if (saved) {
+    const end = parseInt(saved, 10);
+    if (end > Date.now()) {
+      sessionEndTime = end;
+      renderSessionUI();
+      tickSession();
+    } else {
+      localStorage.removeItem(SESSION_KEY);
+    }
+  }
+}
+
+// ── PAUSE PRESETS ─────────────────────────────────────────────────────────────
+const PAUSE_KEY = 'posturePausedUntil';
+
+function pauseFor(ms) {
+  pausedUntil = Date.now() + ms;
+  localStorage.setItem(PAUSE_KEY, String(pausedUntil));
+  if (timerRunning) pauseTimer();
+  renderPauseUI();
+  tickPause();
+}
+
+function resumeFromPause() {
+  clearInterval(pauseTickId);
+  pauseTickId = null;
+  pausedUntil = null;
+  localStorage.removeItem(PAUSE_KEY);
+  renderPauseUI();
+  if (!timerRunning && !awaitingAck) startTimer();
+}
+
+function tickPause() {
+  clearInterval(pauseTickId);
+  updatePauseCountdownDisplay();
+  pauseTickId = setInterval(() => {
+    if (!pausedUntil) { clearInterval(pauseTickId); return; }
+    if (pausedUntil - Date.now() <= 0) {
+      resumeFromPause();
+    } else {
+      updatePauseCountdownDisplay();
+    }
+  }, 30000);
+}
+
+function updatePauseCountdownDisplay() {
+  if (!pausedUntil) return;
+  const rem = pausedUntil - Date.now();
+  const sec = Math.ceil(rem / 1000);
+  const h   = Math.floor(sec / 3600);
+  const m   = Math.floor((sec % 3600) / 60);
+  const txt = h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m` : `<1m`;
+  const el  = document.getElementById('pauseCountdown');
+  if (el) el.textContent = txt;
+}
+
+function renderPauseUI() {
+  const block     = document.getElementById('pauseBlock');
+  const btns      = document.getElementById('pauseButtons');
+  const label     = block ? block.querySelector('.pause-label') : null;
+  const activeRow = document.getElementById('pauseActiveRow');
+  if (!block || !btns || !activeRow) return;
+
+  const isPaused = !!(pausedUntil && pausedUntil > Date.now());
+
+  if (isPaused) {
+    block.classList.remove('hidden');
+    if (label) label.classList.add('hidden');
+    btns.classList.add('hidden');
+    activeRow.classList.remove('hidden');
+    updatePauseCountdownDisplay();
+  } else if (timerRunning) {
+    block.classList.remove('hidden');
+    if (label) label.classList.remove('hidden');
+    btns.classList.remove('hidden');
+    activeRow.classList.add('hidden');
+  } else {
+    block.classList.add('hidden');
+  }
+}
+
+function tomorrowMorningMs() {
+  const t = new Date();
+  t.setDate(t.getDate() + 1);
+  t.setHours(8, 0, 0, 0);
+  return Math.max(t.getTime() - Date.now(), 60000);
+}
+
+function initPause() {
+  const saved = localStorage.getItem(PAUSE_KEY);
+  if (saved) {
+    const end = parseInt(saved, 10);
+    if (end > Date.now()) {
+      pausedUntil = end;
+      renderPauseUI();
+      tickPause();
+    } else {
+      localStorage.removeItem(PAUSE_KEY);
+    }
+  }
+}
+
+// ── SEVEN-DAY STATS ───────────────────────────────────────────────────────────
+const ACK_HISTORY_KEY    = 'postureAckHistory';
+const LONGEST_STREAK_KEY = 'postureLongestStreak';
+
+function loadAckHistory() {
+  try { return JSON.parse(localStorage.getItem(ACK_HISTORY_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+
+function recordAck() {
+  const history = loadAckHistory();
+  const today   = getTodayStr();
+  history[today] = (history[today] || 0) + 1;
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 30);
+  Object.keys(history).forEach(d => { if (new Date(d) < cutoff) delete history[d]; });
+  try { localStorage.setItem(ACK_HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+}
+
+function updateLongestStreak(currentStreak) {
+  const longest = parseInt(localStorage.getItem(LONGEST_STREAK_KEY) || '0', 10);
+  if (currentStreak > longest) {
+    localStorage.setItem(LONGEST_STREAK_KEY, String(currentStreak));
+  }
+}
+
+function renderStats() {
+  const { streak } = loadCoachState();
+  const history    = loadAckHistory();
+  const today      = getTodayStr();
+  const todayAcks  = history[today] || 0;
+  const longest    = Math.max(
+    streak,
+    parseInt(localStorage.getItem(LONGEST_STREAK_KEY) || '0', 10)
+  );
+
+  const todayEl   = document.getElementById('statToday');
+  const streakEl  = document.getElementById('statStreak');
+  const longestEl = document.getElementById('statLongest');
+  if (todayEl)   todayEl.textContent   = todayAcks;
+  if (streakEl)  streakEl.textContent  = streak;
+  if (longestEl) longestEl.textContent = longest;
+
+  renderWeekBars();
+}
+
+function renderWeekBars() {
+  const container = document.getElementById('weekBars');
+  if (!container) return;
+
+  const history  = loadAckHistory();
+  const today    = getTodayStr();
+  const dayNames = ['S','M','T','W','T','F','S'];
+  const days     = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const d   = new Date();
+    d.setDate(d.getDate() - i);
+    const str = d.toISOString().slice(0, 10);
+    days.push({ str, count: history[str] || 0, dow: d.getDay(), isToday: str === today });
+  }
+
+  const maxCount = Math.max(...days.map(d => d.count), 1);
+
+  container.innerHTML = days.map(d => {
+    const pct  = d.count > 0 ? Math.round((d.count / maxCount) * 100) : 0;
+    const h    = d.count > 0 ? Math.max(pct * 0.42, 4) : 3;
+    const cls  = d.count === 0 ? 'week-bar empty' : d.isToday ? 'week-bar today' : 'week-bar';
+    const lCls = d.isToday ? 'week-day-label today' : 'week-day-label';
+    return `<div class="week-bar-wrap" title="${d.str}: ${d.count} check${d.count !== 1 ? 's' : ''}">` +
+           `<div class="${cls}" style="height:${h}px"></div>` +
+           `<div class="${lCls}">${dayNames[d.dow]}</div>` +
+           `</div>`;
+  }).join('');
+}
+
+function initStats() {
+  const body   = document.getElementById('statsBody');
+  const toggle = document.getElementById('btnStatsToggle');
+  if (!body || !toggle) return;
+
+  const stored    = localStorage.getItem('postureStatsCollapsed');
+  const collapsed = stored === null ? true : stored === '1';
+  body.classList.toggle('collapsed', collapsed);
+  toggle.textContent = collapsed ? '▸' : '▾';
+  if (stored === null) localStorage.setItem('postureStatsCollapsed', '1');
+
+  document.getElementById('statsToggle').addEventListener('click', () => {
+    const isNowCollapsed = body.classList.toggle('collapsed');
+    toggle.textContent = isNowCollapsed ? '▸' : '▾';
+    localStorage.setItem('postureStatsCollapsed', isNowCollapsed ? '1' : '0');
+  });
+
+  renderStats();
 }
 
 // ── BACKGROUND / FOREGROUND SYNC ─────────────────────────────────────────────
@@ -1535,22 +2158,17 @@ let remainingAtHide = 0;
 
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
-    // ── Going to background ──
     if (timerRunning && !awaitingAck) {
       hiddenAt        = Date.now();
       remainingAtHide = remainingSeconds;
-      // Re-send a fresh SCHEDULE to the SW with the current remaining time.
-      // If the SW was previously terminated, this gives it a new chance.
       const nextTipForSW = tipQueue[tipQueue.length - 1] || currentTip || TIPS[0];
       scheduleSwNotification(remainingSeconds * 1000, nextTipForSW);
     }
   } else {
-    // ── Returning to foreground ──
     if (hiddenAt !== null && !awaitingAck) {
       const elapsed = Math.floor((Date.now() - hiddenAt) / 1000);
 
       if (timerRunning && elapsed >= remainingAtHide) {
-        // Timer ran out while we were hidden and the SW missed it
         cancelSwNotification();
         clearInterval(tickInterval);
         tickInterval     = null;
@@ -1558,10 +2176,8 @@ document.addEventListener('visibilitychange', () => {
         updateDisplay();
         triggerReminder();
       } else if (timerRunning) {
-        // Timer still has time — sync remaining seconds to correct for throttling
         remainingSeconds = Math.max(0, remainingAtHide - elapsed);
         updateDisplay();
-        // Re-send updated schedule so the SW stays in sync
         const nextTipForSW = tipQueue[tipQueue.length - 1] || currentTip || TIPS[0];
         scheduleSwNotification(remainingSeconds * 1000, nextTipForSW);
       }

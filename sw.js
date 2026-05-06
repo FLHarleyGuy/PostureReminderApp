@@ -1,7 +1,7 @@
-// sw.js — Posture Check PWA Service Worker v7
+// sw.js — Posture Check PWA Service Worker v8
 // Handles: caching, background notification scheduling, notification click
 
-const CACHE_NAME = 'posture-app-v8';
+const CACHE_NAME = 'posture-app-v9';
 const ASSETS = [
   './',
   './index.html',
