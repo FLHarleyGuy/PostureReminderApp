@@ -75,6 +75,14 @@
           <span>The circular countdown shows how long is left until the next check-in. Start, pause, or reset it whenever your work rhythm changes.</span>
         </div>
         <div class="item">
+          <strong>Quick session</strong>
+          <span>Set a time limit for a focused work block — 25, 45, or 90 minutes. During a session the reminder auto-restarts every X minutes without any input from you. When the session ends, you get a done notification and it stops.</span>
+        </div>
+        <div class="item">
+          <strong>Pause presets</strong>
+          <span>Press Pause to stop reminders for a fixed window: 30 minutes, 1 hour, until tomorrow morning, or 8 hours for a presentation. The pause persists across app closes and auto-resumes when the window is up.</span>
+        </div>
+        <div class="item">
           <strong>Adjustable interval</strong>
           <span>Move the slider bar left or right to choose how often reminders appear, from 5 minutes up to 60 minutes.</span>
         </div>
@@ -112,19 +120,4 @@
       document.documentElement.dataset.theme = nextTheme;
       localStorage.setItem('postureTheme', nextTheme);
       const isLight = nextTheme === 'light';
-      btnTheme.textContent = isLight ? '☀' : '☾';
-      btnTheme.title = isLight ? 'Switch to dark mode' : 'Switch to light mode';
-      btnTheme.setAttribute('aria-label', btnTheme.title);
-      const themeMeta = document.querySelector('meta[name="theme-color"]');
-      if (themeMeta) themeMeta.setAttribute('content', isLight ? '#f5f3ec' : '#0d0d0d');
-    }
-
-    setTheme(localStorage.getItem('postureTheme') || 'dark');
-
-    btnTheme.addEventListener('click', () => {
-      const current = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
-      setTheme(current === 'light' ? 'dark' : 'light');
-    });
-  </script>
-</body>
-</html>
+      btnTheme.textConten

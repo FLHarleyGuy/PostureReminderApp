@@ -705,7 +705,65 @@
       text-transform: uppercase;
       color: var(--text-dim);
       font-family: var(--mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
+
+    /* ── TOOLTIPS ── */
+    .tip-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid var(--muted);
+      color: var(--muted);
+      font-size: 9px;
+      font-family: var(--sans);
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: none;
+      cursor: default;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .tip-icon::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e1e1e;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 12px;
+      line-height: 1.55;
+      font-family: var(--sans);
+      font-weight: 400;
+      letter-spacing: 0;
+      text-transform: none;
+      white-space: normal;
+      width: 230px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 10;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    :root[data-theme="light"] .tip-icon::after {
+      background: #fffdf6;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    .tip-icon:hover::after,
+    .tip-icon:focus::after {
+      opacity: 1;
+    }
+    /* mobile: tap to show */
+    .tip-icon.active::after { opacity: 1; }
 
     .session-presets {
       display: flex;
@@ -1047,13 +1105,13 @@
     <!-- Controls -->
     <div class="controls">
       <button class="btn primary" id="btnStart">Start</button>
-      <button class="btn" id="btnPause" disabled>Pause</button>
+      <button class="btn" id="btnPause" disabled title="Pause reminders temporarily. Pick how long — 30 min, 1 hour, until tomorrow, or for a presentation. Timer auto-resumes when the pause window ends.">Pause</button>
       <button class="btn" id="btnReset">Reset</button>
     </div>
 
     <!-- Work Session Presets -->
     <div class="session-block">
-      <div class="session-label">Quick session</div>
+      <div class="session-label">Quick session <span class="tip-icon" tabindex="0" data-tip="Sets a time limit for your work block. The posture reminder keeps auto-restarting every X minutes until your session ends — then you get a done notification.">i</span></div>
       <div class="session-presets" id="sessionPresets">
         <button class="btn-session" data-min="25">25 min</button>
         <button class="btn-session" data-min="45">45 min</button>
@@ -2187,6 +2245,19 @@ document.addEventListener('visibilitychange', () => {
 });
 
 init();
+
+// ── TOOLTIP TAP TOGGLE (mobile) ───────────────────────────────────────────────
+document.querySelectorAll('.tip-icon').forEach(icon => {
+  icon.addEventListener('click', e => {
+    e.stopPropagation();
+    const isActive = icon.classList.contains('active');
+    document.querySelectorAll('.tip-icon.active').forEach(el => el.classList.remove('active'));
+    if (!isActive) icon.classList.add('active');
+  });
+});
+document.addEventListener('click', () => {
+  document.querySelectorAll('.tip-icon.active').forEach(el => el.classList.remove('active'));
+});
 </script>
 </body>
 </html>
