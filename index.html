@@ -1233,7 +1233,7 @@
     <button class="btn-permission" id="btnPermission">Enable</button>
   </div>
 
-  <footer>v1.6 &nbsp;·&nbsp; <a href="about.html">about</a> &nbsp;·&nbsp; <a href="how-to-use.html">how to use</a></footer>
+  <footer>v1.7 &nbsp;·&nbsp; <a href="about.html">about</a> &nbsp;·&nbsp; <a href="how-to-use.html">how to use</a></footer>
 
 <script>
 // ── TIPS ──────────────────────────────────────────────────────────────────────
@@ -1577,14 +1577,28 @@ function triggerReminder() {
   fireNotification(tip);
   cancelSwNotification(); // SW may have fired its own — cancel any pending duplicate
 
-  awaitingAck = true;
-  ackWrapEl.classList.add('visible');
-  btnStart.disabled = true;
-  btnPause.disabled = true;
-  statusDotEl.classList.remove('active');
-  showCheckin();
+  const sessionActive = !!(sessionEndTime && sessionEndTime > Date.now());
 
-  autoResetTimer = setTimeout(() => { if (awaitingAck) acknowledge(true); }, 120000);
+  if (sessionActive) {
+    // Session mode: no "Got it" gate — show check-in briefly then auto-restart
+    statusDotEl.classList.remove('active');
+    btnPause.disabled = true;
+    showCheckin();
+    autoResetTimer = setTimeout(() => {
+      hideCheckin();
+      resetTimer();
+      startTimer();
+    }, 10000); // 10s grace to tap posture check-in before auto-restart
+  } else {
+    // Normal mode: wait for acknowledgment
+    awaitingAck = true;
+    ackWrapEl.classList.add('visible');
+    btnStart.disabled = true;
+    btnPause.disabled = true;
+    statusDotEl.classList.remove('active');
+    showCheckin();
+    autoResetTimer = setTimeout(() => { if (awaitingAck) acknowledge(true); }, 120000);
+  }
 }
 
 function acknowledge(auto = false) {
@@ -1718,9 +1732,18 @@ document.querySelectorAll('.btn-pause-for').forEach(btn => {
 document.getElementById('btnResumePause').addEventListener('click', resumeFromPause);
 
 // Check-in button listeners
-document.getElementById('btnCheckinPoor').addEventListener('click', () => recordCheckin(1));
-document.getElementById('btnCheckinFair').addEventListener('click', () => recordCheckin(2));
-document.getElementById('btnCheckinGood').addEventListener('click', () => recordCheckin(3));
+// In session mode (not awaitingAck), tapping a rating immediately restarts after a brief flash
+function sessionCheckinRestart() {
+  clearAutoReset();
+  setTimeout(() => {
+    hideCheckin();
+    resetTimer();
+    startTimer();
+  }, 800); // brief pause so the "✓ logged" confirmation is visible
+}
+document.getElementById('btnCheckinPoor').addEventListener('click', () => { recordCheckin(1); if (!awaitingAck) sessionCheckinRestart(); });
+document.getElementById('btnCheckinFair').addEventListener('click', () => { recordCheckin(2); if (!awaitingAck) sessionCheckinRestart(); });
+document.getElementById('btnCheckinGood').addEventListener('click', () => { recordCheckin(3); if (!awaitingAck) sessionCheckinRestart(); });
 
 // ── POSTURE CHECK-IN ──────────────────────────────────────────────────────────
 
@@ -2234,30 +2257,4 @@ document.addEventListener('visibilitychange', () => {
         updateDisplay();
         triggerReminder();
       } else if (timerRunning) {
-        remainingSeconds = Math.max(0, remainingAtHide - elapsed);
-        updateDisplay();
-        const nextTipForSW = tipQueue[tipQueue.length - 1] || currentTip || TIPS[0];
-        scheduleSwNotification(remainingSeconds * 1000, nextTipForSW);
-      }
-    }
-    hiddenAt = null;
-  }
-});
-
-init();
-
-// ── TOOLTIP TAP TOGGLE (mobile) ───────────────────────────────────────────────
-document.querySelectorAll('.tip-icon').forEach(icon => {
-  icon.addEventListener('click', e => {
-    e.stopPropagation();
-    const isActive = icon.classList.contains('active');
-    document.querySelectorAll('.tip-icon.active').forEach(el => el.classList.remove('active'));
-    if (!isActive) icon.classList.add('active');
-  });
-});
-document.addEventListener('click', () => {
-  document.querySelectorAll('.tip-icon.active').forEach(el => el.classList.remove('active'));
-});
-</script>
-</body>
-</html>
+        remainingS

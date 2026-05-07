@@ -1,7 +1,7 @@
-// sw.js — Posture Check PWA Service Worker v8
+// sw.js — Posture Check PWA Service Worker v9
 // Handles: caching, background notification scheduling, notification click
 
-const CACHE_NAME = 'posture-app-v9';
+const CACHE_NAME = 'posture-app-v10';
 const ASSETS = [
   './',
   './index.html',
@@ -90,4 +90,4 @@ async function fireNotification(tip) {
   });
   // Tell any open app windows to show the ack UI
   const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-  clients.forEach((c) => c.postMessage({ type: 'TRIGGER
+  clients.forEach((c) => c.postMessage({ type: 'TRIGGE
