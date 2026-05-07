@@ -2257,4 +2257,30 @@ document.addEventListener('visibilitychange', () => {
         updateDisplay();
         triggerReminder();
       } else if (timerRunning) {
-        remainingS
+        remainingSeconds = Math.max(0, remainingAtHide - elapsed);
+        updateDisplay();
+        const nextTipForSW = tipQueue[tipQueue.length - 1] || currentTip || TIPS[0];
+        scheduleSwNotification(remainingSeconds * 1000, nextTipForSW);
+      }
+    }
+    hiddenAt = null;
+  }
+});
+
+init();
+
+// ── TOOLTIP TAP TOGGLE (mobile) ───────────────────────────────────────────────
+document.querySelectorAll('.tip-icon').forEach(icon => {
+  icon.addEventListener('click', e => {
+    e.stopPropagation();
+    const isActive = icon.classList.contains('active');
+    document.querySelectorAll('.tip-icon.active').forEach(el => el.classList.remove('active'));
+    if (!isActive) icon.classList.add('active');
+  });
+});
+document.addEventListener('click', () => {
+  document.querySelectorAll('.tip-icon.active').forEach(el => el.classList.remove('active'));
+});
+</script>
+</body>
+</html>
