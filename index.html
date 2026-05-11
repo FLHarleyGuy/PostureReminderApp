@@ -351,6 +351,23 @@
       cursor: not-allowed;
     }
 
+    .btn-share {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid var(--text-dim);
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-share:hover { border-color: var(--text); color: var(--text); }
+
     /* ── ACK BUTTON ── */
     .ack-wrap { display: none; }
     .ack-wrap.visible { display: block; }
@@ -1231,6 +1248,10 @@
   <div class="permission-banner hidden" id="permissionBanner">
     <p>Notifications off. No background reminders.</p>
     <button class="btn-permission" id="btnPermission">Enable</button>
+  </div>
+
+  <div style="margin-top: 10px;">
+    <button class="btn-share" onclick="shareApp()">&#8679; Share</button>
   </div>
 
   <footer>v1.7 &nbsp;·&nbsp; <a href="about.html">about</a> &nbsp;·&nbsp; <a href="how-to-use.html">how to use</a></footer>
@@ -2281,6 +2302,34 @@ document.querySelectorAll('.tip-icon').forEach(icon => {
 document.addEventListener('click', () => {
   document.querySelectorAll('.tip-icon.active').forEach(el => el.classList.remove('active'));
 });
+
+function shareApp() {
+  const url = 'https://labs.justinache.com/posture-app/';
+  const title = 'Posture Check';
+  const text = 'A free posture and stretch reminder app for your phone or desktop.';
+  if (navigator.share) {
+    navigator.share({ title, text, url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url).then(() => {
+      showCopyToast('Link copied!');
+    }).catch(() => {
+      showCopyToast(url);
+    });
+  }
+}
+
+function showCopyToast(msg) {
+  const toast = document.createElement('div');
+  toast.textContent = msg;
+  toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 18px;border-radius:8px;font-size:14px;z-index:9999;pointer-events:none;';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
 </script>
+
+  <footer style="text-align:center;padding:10px 0 6px;font-family:'Arial Black',Arial,sans-serif;font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:0.06em;text-transform:uppercase;">
+    Built by Justin Ache &nbsp;
+    <a href="https://justinache.com" target="_blank" rel="noopener" style="color:rgba(255,255,255,0.55);text-decoration:none;">JustinAche.com</a>
+  </footer>
 </body>
 </html>
